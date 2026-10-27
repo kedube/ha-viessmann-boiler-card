@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Viessmann Boiler Card · dev</title>
+    <style>
+      :root {
+        --primary-text-color: #212121;
+        --secondary-text-color: #727272;
+        --card-background-color: #ffffff;
+        --secondary-background-color: #eef0f2;
+        color-scheme: light;
+        font-family: Roboto, "Segoe UI", system-ui, sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        background: #f3f4f6;
+        color: var(--primary-text-color);
+      }
+      body.dark {
+        --primary-text-color: #e1e1e1;
+        --secondary-text-color: #9b9b9b;
+        --card-background-color: #1c1c1c;
+        --secondary-background-color: #2a2a2a;
+        color-scheme: dark;
+        background: #111111;
+      }
+      #controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      #controls button {
+        padding: 6px 10px;
+        border: 1px solid rgba(127, 127, 127, 0.4);
+        border-radius: 6px;
+        background: var(--card-background-color);
+        color: inherit;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      #controls button.active {
+        border-color: #d6001c;
+        box-shadow: inset 0 0 0 1px #d6001c;
+      }
+      #stage {
+        max-width: 100%;
+      }
+      #editor-host {
+        display: grid;
+        grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+        gap: 16px;
+        max-width: 1100px;
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 12px;
+        background: var(--card-background-color);
+      }
+      #editor-host[hidden] {
+        display: none;
+      }
+      #config {
+        margin: 0;
+        font: 12px/1.4 ui-monospace, monospace;
+        white-space: pre-wrap;
+      }
+      #log {
+        margin: 12px 0 0;
+        font: 12px/1.4 ui-monospace, monospace;
+        color: var(--secondary-text-color);
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controls"></div>
+    <div id="stage"></div>
+    <pre id="log"></pre>
+    <div id="editor-host" hidden>
+      <pre id="config"></pre>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

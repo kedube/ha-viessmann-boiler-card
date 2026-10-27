@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.DS_Store
+
+# Renders and CAD downloads stay out of git until licensing is settled
+assets/renders/
+tools/render/cache/
+*.blend1
+__pycache__/
