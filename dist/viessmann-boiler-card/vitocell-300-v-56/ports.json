@@ -1,0 +1,131 @@
+{
+  "id": "vitocell-300-v-56",
+  "version": 1,
+  "camera": {
+    "yaw_deg": 0.0,
+    "pitch_deg": 0.0,
+    "px_per_mm": 1.0
+  },
+  "light_dir": [
+    0.3891,
+    0.7782,
+    -0.4929
+  ],
+  "mount": "floor",
+  "image": {
+    "file": "render.webp",
+    "width": 707,
+    "height": 1477
+  },
+  "anchor_px": [
+    334.5,
+    1460.0
+  ],
+  "bounds_mm": {
+    "min": [
+      -318.5,
+      -685.5,
+      0.0
+    ],
+    "max": [
+      356.0,
+      -48.5,
+      1444.0
+    ]
+  },
+  "ports": {
+    "coil_upper": {
+      "pos_mm": [
+        344.0,
+        -367.0,
+        642
+      ],
+      "dir": [
+        1,
+        0,
+        0
+      ],
+      "diameter_mm": 28.6,
+      "px": [
+        678.5,
+        818.0
+      ]
+    },
+    "coil_lower": {
+      "pos_mm": [
+        344.0,
+        -367.0,
+        342
+      ],
+      "dir": [
+        1,
+        0,
+        0
+      ],
+      "diameter_mm": 28.6,
+      "px": [
+        678.5,
+        1118.0
+      ]
+    },
+    "cold_in": {
+      "pos_mm": [
+        -150.0,
+        -367.0,
+        1444.0
+      ],
+      "dir": [
+        0,
+        0,
+        1
+      ],
+      "diameter_mm": 22.2,
+      "px": [
+        184.5,
+        16.0
+      ]
+    },
+    "hot_out": {
+      "pos_mm": [
+        150.0,
+        -367.0,
+        1444.0
+      ],
+      "dir": [
+        0,
+        0,
+        1
+      ],
+      "diameter_mm": 22.2,
+      "px": [
+        484.5,
+        16.0
+      ]
+    }
+  },
+  "points": {
+    "label": {
+      "pos_mm": [
+        0,
+        -684.0,
+        1000
+      ],
+      "px": [
+        334.5,
+        460.0
+      ]
+    },
+    "top": {
+      "pos_mm": [
+        0,
+        -367.0,
+        1410.0
+      ],
+      "px": [
+        334.5,
+        50.0
+      ]
+    }
+  },
+  "notes": "Modelled on the 53 USG (200 L) Vitocell 300-V EVIB, the closest Viessmann size to 56 gal."
+}

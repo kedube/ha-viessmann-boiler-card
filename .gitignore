@@ -1,10 +1,14 @@
 node_modules/
-dist/
 coverage/
 .DS_Store
 
-# Renders and CAD downloads stay out of git until licensing is settled
-assets/renders/
+# Only each part's render.webp and ports.json are committed. Blender's
+# full-size PNGs, saved scenes and port check images stay local, as do CAD
+# downloads and the HDRI cache.
+assets/renders/**
+!assets/renders/*/
+!assets/renders/*/render.webp
+!assets/renders/*/ports.json
 tools/render/cache/
 *.blend1
 __pycache__/

@@ -1,6 +1,6 @@
 # Viessmann Boiler Card: Plan
 
-_Last updated 2026-10-26. Status: scope agreed, waiting for the go-ahead to build._
+_Last updated 2026-10-26. Status: built, and installed through HACS from release v0.2.0._
 
 A Home Assistant dashboard card for the built-in **Viessmann ViCare** integration (`vicare`). It shows a realistic rendering of the chosen Viessmann unit inside its full hydronic system: heating loops, zones and the hot water tank loop. Water flow is animated from live states, and every entity and setting the integration provides is available in the card.
 
@@ -12,7 +12,7 @@ A Home Assistant dashboard card for the built-in **Viessmann ViCare** integratio
 | Flow style | Glow inside copper: pipes stay copper, and a soft stream moves along the inside of each pipe, coloured by water temperature. |
 | Models | The owner's Vitocrossal 300 CU3A 199 and Vitocell 300-V. Other models were dropped when the card became private. |
 | CAD sources | Public files only: viessmann.ca (via vitoteam), MEPcontent and technical manuals. No Partner Portal. |
-| Distribution | Private, for the owner's use only. Renders stay out of git; `npm run deploy` copies them into Home Assistant with the card. |
+| Distribution | For the owner's use, installed through HACS as a custom repository from the public GitHub repo. The build is committed in `dist/` with each part's render and ports, because HACS installs from there. |
 | Schedules and holiday mode | Not for now. Home Assistant doesn't expose them. |
 | Primary screen | Assumed: landscape tablet and desktop first. Phones get a zoomable diagram with tabs. |
 
@@ -148,7 +148,7 @@ This controller doesn't provide return temperatures, gas or energy use, a one-ti
 - **Generic parts, unbranded.** Circulators (red and black), plate heat exchanger, mixing valve and motor, thermostatic mixing valve, zone valves. Air separator, pressure gauge and venting are left out of the diagram.
 - **Logos.** A separate optional decal, off by default.
 - **Tools to add.** LibreDWG via Homebrew (to read the 2D DWG) and the Bonsai add-on for Blender.
-- **Never committed.** CAD downloads and raw renders.
+- **Never committed.** CAD downloads and Blender's full-size output. Each part's `render.webp` and `ports.json` are committed.
 
 ## Phases
 
@@ -156,7 +156,7 @@ This controller doesn't provide return temperatures, gas or energy use, a one-ti
 1. **Project setup.** Done.
    - Build tooling and a dev page with a fake Home Assistant, built from cleaned-up diagnostics.
    - Scenario switches: idle, burner firing, tank charging, zones calling.
-   - HACS metadata and a CI build.
+   - HACS metadata.
 2. **Render prototype, then review.** Done and approved: the CU3A 199, the Vitocell, the circulators, the heat exchanger, the mixing valve, the tempering valve and the zone valves, in the 2D diagram.
 3. **Diagram engine.** Done for the reference installation: its layout, pipe routing, flow rules, burner glow and labels. Building other layouts from the config was dropped with phase 6.
 4. **Entities and controls.** Done: System, Heating, Hot water and Diagnostics tabs, the heating-curve chart, and guarded writes. Component tests check every service call.
@@ -165,22 +165,23 @@ This controller doesn't provide return temperatures, gas or energy use, a one-ti
 7. **Polish.** Done:
    - The diagram keeps a readable size and scrolls sideways on narrow cards.
    - Light and dark themes, °C and °F, reduced motion.
-   - `npm run deploy` copies the build and renders into Home Assistant.
-   - No public release, so no release workflow is needed.
+   - Released through HACS as a custom repository. `dist/` is committed, and `npm version` rebuilds it before tagging.
+   - `npm run deploy` copies a build into `/config/www` to try a change before releasing it.
+   - Renders are requested with the card version, because HACS serves files with long cache headers.
 
 ## Testing
 
 - **Unit tests:** discovery, layout, flow rules, the temperature scale and the heating-curve maths.
   - The published Viessmann curve formula matches live data. Circuit 1 (slope 1.2, shift 20, normal 29 °C) at 15.9 °C outside predicts about 68 °C, and the boiler read 66 °C with the burner idle.
 - **Dev page:** a scenario for every flow state.
-- **Live:** copy the build to `/config/www/` on the owner's Home Assistant (2026.10). Read-only checks first, then try each control once.
+- **Live:** install through HACS on the owner's Home Assistant (2026.10). Read-only checks first, then try each control once.
 
 ## Risks
 
 - **Copper realism.** SVG pipes may not match the renders. The phase 2 review catches this. The fallback is Blender-rendered pipe pieces (straight, elbow, tee) assembled as images.
 - **Lag.** ViCare polls every 60 s. Zone flow depends on Nest reporting a call for heat, and the Nest diagnostics show frequent stream reconnects (465), so measure how quickly `hvac_action` updates arrive.
 - **API limit.** 120 calls per 10 minutes and 1,450 a day, shared with every other ViCare use. The card only reads Home Assistant state, and its writes are debounced.
-- **Licensing.** Viessmann trademarks and images derived from its CAD. Not an issue while the card stays private.
+- **Licensing.** Viessmann trademarks and images derived from its CAD. The renders are in the public repo so HACS can install them. They carry no logos, and the README names the trademark owners.
 
 ## Out of scope for now
 

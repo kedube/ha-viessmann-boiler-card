@@ -1,0 +1,142 @@
+{
+  "id": "vitocrossal-300-cu3a-199",
+  "version": 1,
+  "camera": {
+    "yaw_deg": 0.0,
+    "pitch_deg": 0.0,
+    "px_per_mm": 1.0
+  },
+  "light_dir": [
+    0.3891,
+    0.7782,
+    -0.4929
+  ],
+  "mount": "floor",
+  "image": {
+    "file": "render.webp",
+    "width": 768,
+    "height": 1672
+  },
+  "anchor_px": [
+    384.0,
+    1656.0
+  ],
+  "bounds_mm": {
+    "min": [
+      -368.0,
+      -813.0,
+      0.0
+    ],
+    "max": [
+      368.0,
+      -15.1,
+      1640.0
+    ]
+  },
+  "ports": {
+    "supply": {
+      "pos_mm": [
+        -64.0,
+        -45.0,
+        1640.0
+      ],
+      "dir": [
+        0,
+        0,
+        1
+      ],
+      "diameter_mm": 34.9,
+      "px": [
+        320.0,
+        16.0
+      ]
+    },
+    "return": {
+      "pos_mm": [
+        368.0,
+        -456.5,
+        1100
+      ],
+      "dir": [
+        1,
+        0,
+        0
+      ],
+      "diameter_mm": 34.9,
+      "px": [
+        752.0,
+        556.0
+      ]
+    },
+    "dhw_supply": {
+      "pos_mm": [
+        -368.0,
+        -456.5,
+        642
+      ],
+      "dir": [
+        -1,
+        0,
+        0
+      ],
+      "diameter_mm": 28.6,
+      "px": [
+        16.0,
+        1014.0
+      ]
+    },
+    "dhw_return": {
+      "pos_mm": [
+        -368.0,
+        -456.5,
+        342
+      ],
+      "dir": [
+        -1,
+        0,
+        0
+      ],
+      "diameter_mm": 28.6,
+      "px": [
+        16.0,
+        1314.0
+      ]
+    }
+  },
+  "points": {
+    "label": {
+      "pos_mm": [
+        0,
+        -813.0,
+        1300
+      ],
+      "px": [
+        384.0,
+        356.0
+      ]
+    },
+    "display": {
+      "pos_mm": [
+        0,
+        -747,
+        1538
+      ],
+      "px": [
+        384.0,
+        118.0
+      ]
+    },
+    "burner_glow": {
+      "pos_mm": [
+        0,
+        -430,
+        1060
+      ],
+      "px": [
+        384.0,
+        596.0
+      ]
+    }
+  },
+  "notes": "Heating loop: supply on top (with relief valve and air vent), return on the right side. DHW loop: dhw_supply and dhw_return on the left side at the tank coil heights."
+}

@@ -1,3 +1,4 @@
+import { CARD_VERSION } from "../const";
 import type { Pt } from "./geometry";
 
 // Each component is rendered by tools/render as a straight-on front view into
@@ -139,12 +140,15 @@ export interface PortsJson {
 
 const cache = new Map<string, Promise<ComponentSpec>>();
 
+// HACS serves its files with long cache headers, so each version asks for its own copy.
+const VERSION_QUERY = `?v=${CARD_VERSION}`;
+
 /** Loads a component's render and ports, falling back to the placeholder. */
 export function loadComponent(assetUrl: string, id: string): Promise<ComponentSpec> {
   const base = `${assetUrl.replace(/\/?$/, "/")}${id}/`;
   let pending = cache.get(base);
   if (!pending) {
-    pending = fetch(`${base}ports.json`)
+    pending = fetch(`${base}ports.json${VERSION_QUERY}`)
       .then((r) => (r.ok ? (r.json() as Promise<PortsJson>) : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((json) => specFromPortsJson(json, base))
       .catch(() => placeholderSpec(id));
@@ -181,6 +185,6 @@ export function specFromPortsJson(json: PortsJson, base: string): ComponentSpec 
       }),
     ),
     points: Object.fromEntries(Object.entries(json.points ?? {}).map(([name, p]) => [name, p.px])),
-    image: `${base}${json.image.file}`,
+    image: `${base}${json.image.file}${VERSION_QUERY}`,
   };
 }

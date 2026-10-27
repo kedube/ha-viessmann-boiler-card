@@ -1,0 +1,85 @@
+{
+  "id": "zone-valve",
+  "version": 1,
+  "camera": {
+    "yaw_deg": 0.0,
+    "pitch_deg": 0.0,
+    "px_per_mm": 1.0
+  },
+  "light_dir": [
+    0.3891,
+    0.7782,
+    -0.4929
+  ],
+  "mount": "inline",
+  "image": {
+    "file": "render.webp",
+    "width": 145,
+    "height": 178
+  },
+  "anchor_px": [
+    72.0,
+    144.0
+  ],
+  "bounds_mm": {
+    "min": [
+      -56.0,
+      -124.0,
+      -18.0
+    ],
+    "max": [
+      56.0,
+      -50.5,
+      128.0
+    ]
+  },
+  "ports": {
+    "inlet": {
+      "pos_mm": [
+        -56.0,
+        -70.0,
+        0
+      ],
+      "dir": [
+        -1,
+        0,
+        0
+      ],
+      "diameter_mm": 22.2,
+      "px": [
+        16.0,
+        144.0
+      ]
+    },
+    "outlet": {
+      "pos_mm": [
+        56.0,
+        -70.0,
+        0
+      ],
+      "dir": [
+        1,
+        0,
+        0
+      ],
+      "diameter_mm": 22.2,
+      "px": [
+        128.0,
+        144.0
+      ]
+    }
+  },
+  "points": {
+    "label": {
+      "pos_mm": [
+        0,
+        -122.0,
+        87
+      ],
+      "px": [
+        72.0,
+        57.0
+      ]
+    }
+  }
+}

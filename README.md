@@ -1,6 +1,6 @@
 # Viessmann Boiler Card
 
-A private Home Assistant dashboard card for a Viessmann boiler on the built-in **Viessmann ViCare** integration. It draws the heating system as a 2D diagram with realistic renders of the equipment: the Vitocrossal 300 CU3A, the Vitocell tank, the pumps, the plate heat exchanger and valves, and the seven radiant zones. Water moves through the loops as the pumps and thermostats call: orange on the hot side, blue on the cold side. Tabs give access to every setting the integration exposes.
+A personal Home Assistant dashboard card for a Viessmann boiler on the built-in **Viessmann ViCare** integration. It draws the heating system as a 2D diagram with realistic renders of the equipment: the Vitocrossal 300 CU3A, the Vitocell tank, the pumps, the plate heat exchanger and valves, and the seven radiant zones. Water moves through the loops as the pumps and thermostats call: orange on the hot side, blue on the cold side. Tabs give access to every setting the integration exposes.
 
 ## What it shows
 
@@ -24,14 +24,13 @@ Tapping any part, zone or reading opens Home Assistant's more-info dialog for it
 
 ## Install
 
-1. Mount Home Assistant's config share (the Samba add-on works) and run:
-   ```sh
-   npm install
-   npm run deploy -- /Volumes/config/www
-   ```
-   This builds the card and copies it, with the renders, into `/config/www`.
-2. Add the resource `/local/viessmann-boiler-card.js?v=0.2.0` (JavaScript module) under **Settings → Dashboards → ⋮ → Resources**. After each later deploy, raise the `?v=` number so browsers load the new version.
+Through HACS, as a custom repository:
+
+1. In HACS, open **⋮ → Custom repositories** and add `https://github.com/kedube/ha-viessmann-boiler-card` with the type **Dashboard**.
+2. Open **Viessmann Boiler Card** in HACS and download it. HACS installs the card with its renders and adds the dashboard resource. Reload the browser when it asks.
 3. Add **Viessmann Boiler Card** from the card picker. It finds the ViCare boiler and starts with one zone per Nest thermostat. Everything else is in the visual editor.
+
+HACS offers each new release as an update.
 
 ### YAML
 
@@ -61,7 +60,7 @@ circuits:
   - `title` replaces the boiler name.
   - `device_id` selects a specific ViCare device.
   - `animation: false` turns the flow animation off.
-  - `asset_url` changes where the renders live (default `/local/viessmann-boiler-card/`).
+  - `asset_url` changes where the renders load from (default: the `viessmann-boiler-card` folder beside the card's script).
 
 ## Development
 
@@ -71,7 +70,7 @@ Requires Node 20+.
 npm run dev        # dev page at http://localhost:5178
 npm test           # unit and component tests
 npm run typecheck
-npm run build      # dist/viessmann-boiler-card.js
+npm run build      # dist/: the card and its renders, as HACS installs them
 ```
 
 The dev page runs the card against a simulated Home Assistant built from the real installation's diagnostics.
@@ -80,6 +79,18 @@ The dev page runs the card against a simulated Home Assistant built from the rea
 - **Display:** light and dark, °C and °F, and the visual editor.
 - **URL parameters:** make screenshots reproducible, e.g. `/dev/?scenario=zones&theme=dark&units=F&width=1100&tab=heating&editor=1`.
 
-The renders come from Blender scripts in [tools/render](tools/render) and are kept out of git; `npm run deploy` copies them from `assets/renders/`.
+The renders come from Blender scripts in [tools/render](tools/render). Each part's `render.webp` and `ports.json` are committed under `assets/renders/`, and the build copies them into `dist/`.
+
+### Releasing
+
+HACS installs `dist/` from the latest GitHub release, so `dist/` is committed.
+
+```sh
+npm version patch          # rebuilds dist/ with the new version, then commits and tags it
+git push --follow-tags
+gh release create v0.2.1 --generate-notes
+```
+
+To try a change on Home Assistant before releasing it, mount the config share (the Samba add-on works) and run `npm run deploy -- /Volumes/config/www`. That copies `dist/` into `/config/www`. While testing, point the dashboard resource at `/local/viessmann-boiler-card.js?v=<n>` instead of the HACS one, raising `n` after each deploy.
 
 Viessmann, Vitocrossal, Vitocell and Vitotronic are trademarks of their owners. This is a personal project, not affiliated with Viessmann or Carrier.

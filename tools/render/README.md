@@ -21,8 +21,10 @@ python3 tools/render/check_ports.py assets/renders --out /tmp/port-checks
   the projection, fails on any difference over 0.5 px, and writes a check
   image per part with the anchor and ports marked.
 
-Renders and the HDRI cache (`tools/render/cache/`, Poly Haven CC0) are
-gitignored until licensing of the CAD-derived images is settled.
+Each part's `render.webp` and `ports.json` are committed, and `npm run build`
+copies them into `dist/` for HACS. The full-size PNGs, saved `.blend` scenes,
+check images and the HDRI cache (`tools/render/cache/`, Poly Haven CC0) are
+gitignored.
 
 ## Contract with the card
 

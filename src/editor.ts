@@ -54,7 +54,7 @@ export class ViessmannBoilerCardEditor extends LitElement {
         <h3>Renders</h3>
         <label>
           <span>Folder with the boiler renders</span>
-          <input .value=${config.asset_url ?? DEFAULT_ASSET_URL} @change=${(e: Event) => this._update({ ...config, asset_url: text(e) })} />
+          <input .value=${config.asset_url ?? ""} placeholder=${DEFAULT_ASSET_URL} @change=${(e: Event) => this._update({ ...config, asset_url: text(e) })} />
         </label>
       </section>
     `;
