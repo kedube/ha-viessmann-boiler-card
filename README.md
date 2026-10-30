@@ -100,10 +100,16 @@ The renders come from Blender scripts in [tools/render](tools/render). Each part
 
 HACS installs `dist/` from the latest GitHub release, so `dist/` is committed.
 
+- **Names:** releases go 0.1, 0.2 … 0.9, then 1.0, with no "v".
+- **Version number:** npm needs three parts, so `package.json` holds the same version with a `.0` on the end (0.3.0 for 0.3).
+- **Rebuild first:** always bump the version with npm before releasing. That rebuilds `dist/`; a release made without it installs the previous card.
+
 ```sh
-npm version patch          # rebuilds dist/ with the new version, then commits and tags it
-git push --follow-tags
-gh release create v0.2.1 --generate-notes
+npm version minor --no-git-tag-version   # 0.2.0 → 0.3.0, rebuilding dist/; `major` for 0.9 → 1.0
+git commit -am 0.3
+git tag 0.3
+git push origin main 0.3
+gh release create 0.3 --generate-notes
 ```
 
 To try a change on Home Assistant before releasing it, mount the config share (the Samba add-on works) and run `npm run deploy -- /Volumes/config/www`. That copies `dist/` into `/config/www`. While testing, point the dashboard resource at `/local/viessmann-boiler-card.js?v=<n>` instead of the HACS one, raising `n` after each deploy.

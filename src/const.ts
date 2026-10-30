@@ -3,7 +3,8 @@ import { version } from "../package.json";
 export const CARD_TAG = "viessmann-boiler-card";
 export const EDITOR_TAG = "viessmann-boiler-card-editor";
 export const USAGE_TAG = "viessmann-boiler-usage";
-export const CARD_VERSION = version;
+/** Releases drop the ".0" that npm needs: package.json 0.3.0 is release 0.3. */
+export const CARD_VERSION = version.replace(/\.0$/, "");
 
 /** The renders sit in a folder beside the card's script: /local/ for a copied build, /hacsfiles/<repo>/ under HACS. */
 export const DEFAULT_ASSET_URL = new URL(/* @vite-ignore */ "viessmann-boiler-card/", import.meta.url).pathname;
