@@ -1,5 +1,6 @@
 import type { HassEntity, HomeAssistant } from "../src/types";
 import { buildFixture } from "./fixtures";
+import { simulateRecorder } from "./history";
 
 const TEMPERATURE_ATTRS = ["current_temperature", "temperature", "target_temp_low", "target_temp_high", "min_temp", "max_temp"];
 
@@ -9,6 +10,7 @@ export class FakeHass {
   dark = false;
   readonly log: string[] = [];
   private fixture = buildFixture();
+  private recorder = simulateRecorder(Date.now());
   private listeners: Array<() => void> = [];
 
   reset(): void {
@@ -59,9 +61,34 @@ export class FakeHass {
           const ids = (msg.entity_ids as string[]) ?? [];
           return Object.fromEntries(ids.map((id) => [id, this.fixture.registry[id] ?? null])) as T;
         }
+        if (msg.type === "history/history_during_period") return this.history(msg) as T;
+        if (msg.type === "recorder/statistics_during_period") return this.statistics(msg) as T;
         throw new Error(`Unsupported WS message ${msg.type}`);
       },
     };
+  }
+
+  /** Rows in the window, with the state at its start moved to the start, as Home Assistant sends them. */
+  private history(msg: Record<string, unknown>): Record<string, Array<{ s: string; lu: number }>> {
+    const start = Date.parse(String(msg.start_time)) / 1000;
+    const end = Date.parse(String(msg.end_time)) / 1000;
+    const out: Record<string, Array<{ s: string; lu: number }>> = {};
+    for (const id of msg.entity_ids as string[]) {
+      const rows = this.recorder.history[id] ?? [];
+      const before = rows.filter((r) => r.lu <= start).at(-1);
+      const during = rows.filter((r) => r.lu > start && r.lu <= end);
+      const unit = this.fixture.states[id]?.attributes.unit_of_measurement;
+      const f = (s: string) => (this.unit === "°F" && unit === "°C" ? ((Number(s) * 9) / 5 + 32).toFixed(1) : s);
+      out[id] = [...(before ? [{ ...before, lu: start }] : []), ...during].map((r) => ({ s: f(r.s), lu: r.lu }));
+    }
+    return out;
+  }
+
+  private statistics(msg: Record<string, unknown>): Record<string, unknown[]> {
+    const start = Date.parse(String(msg.start_time));
+    const end = Date.parse(String(msg.end_time));
+    const ids = msg.statistic_ids as string[];
+    return Object.fromEntries(ids.map((id) => [id, (this.recorder.statistics[id] ?? []).filter((r) => r.start >= start && r.end <= end)]));
   }
 
   /** Applies a service call to the fixture, which is stored in °C. */

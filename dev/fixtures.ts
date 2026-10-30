@@ -195,6 +195,7 @@ export const DEV_CONFIG: BoilerCardConfig = {
 
 export const ENTITY = {
   burner: `binary_sensor.${P}_burner`,
+  burnerHours: `sensor.${P}_burner_hours`,
   modulation: `sensor.${P}_burner_modulation`,
   boiler: `sensor.${P}_boiler_temperature`,
   supply1: `sensor.${P}_supply_temperature`,

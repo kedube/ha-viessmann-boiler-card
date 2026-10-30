@@ -2,6 +2,7 @@ import { version } from "../package.json";
 
 export const CARD_TAG = "viessmann-boiler-card";
 export const EDITOR_TAG = "viessmann-boiler-card-editor";
+export const USAGE_TAG = "viessmann-boiler-usage";
 export const CARD_VERSION = version;
 
 /** The renders sit in a folder beside the card's script: /local/ for a copied build, /hacsfiles/<repo>/ under HACS. */

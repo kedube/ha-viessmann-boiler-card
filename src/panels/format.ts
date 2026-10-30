@@ -11,3 +11,11 @@ export function shortName(ctx: PanelContext, entityId: string): string {
   const prefix = device?.name_by_user ?? device?.name;
   return prefix && name.startsWith(`${prefix} `) ? name.slice(prefix.length + 1) : name;
 }
+
+/** "42 min", "3 h" or "3 h 12 min". */
+export function duration(minutes: number): string {
+  const m = Math.round(minutes);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return m % 60 ? `${h} h ${m % 60} min` : `${h} h`;
+}

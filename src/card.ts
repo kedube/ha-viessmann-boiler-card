@@ -33,11 +33,12 @@ const FLOW_SPEED = 60; // diagram pixels per second
 const SEND_DELAY_MS = 1500; // wait for the user to stop adjusting before calling Viessmann
 const PENDING_MS = 3 * 60_000; // ViCare polls about once a minute; give up on a change after this
 
-type Tab = "system" | "heating" | "hotwater" | "diagnostics";
+type Tab = "system" | "heating" | "hotwater" | "usage" | "diagnostics";
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "system", label: "System" },
   { id: "heating", label: "Heating" },
   { id: "hotwater", label: "Hot water" },
+  { id: "usage", label: "Usage" },
   { id: "diagnostics", label: "Diagnostics" },
 ];
 
@@ -188,7 +189,10 @@ export class ViessmannBoilerCard extends LitElement {
           )}
         </nav>
         <div class="scroller" ?hidden=${tab !== "system"}>${this._renderScene(d)}</div>
-        ${tab !== "system" ? html`<div class="panels">${this._renderPanel(tab)}</div>` : nothing}
+        ${tab !== "system" && tab !== "usage" ? html`<div class="panels">${this._renderPanel(tab)}</div>` : nothing}
+        <div class="panels" ?hidden=${tab !== "usage"}>
+          <viessmann-boiler-usage .ctx=${this._panelContext()} .active=${tab === "usage"}></viessmann-boiler-usage>
+        </div>
       </ha-card>
     `;
   }
@@ -606,6 +610,13 @@ export class ViessmannBoilerCard extends LitElement {
       --panel: rgba(127, 127, 127, 0.07);
       --divider: var(--divider-color, rgba(127, 127, 127, 0.22));
       --accent: var(--primary-color, #03a9f4);
+      /* Usage chart series, in order along the water's path (checked for colour-blind separation). */
+      --series-boiler: #eb6834;
+      --series-circuit-1: #1baf7a;
+      --series-circuit-2: #eda100;
+      --series-circuit-3: #e87ba4;
+      --series-circuit-4: #6250d6;
+      --series-tank: #2a78d6;
     }
     ha-card.dark {
       --floor-top: rgba(255, 255, 255, 0.07);
@@ -614,6 +625,12 @@ export class ViessmannBoilerCard extends LitElement {
       --tile: #2b2825;
       --tile-stroke: rgba(255, 255, 255, 0.08);
       --panel: rgba(255, 255, 255, 0.05);
+      --series-boiler: #d95926;
+      --series-circuit-1: #199e70;
+      --series-circuit-2: #c98500;
+      --series-circuit-3: #d55181;
+      --series-circuit-4: #9085e9;
+      --series-tank: #3987e5;
     }
     [hidden] {
       display: none !important;
@@ -1048,7 +1065,8 @@ export class ViessmannBoilerCard extends LitElement {
       stroke: var(--primary-text-color);
       stroke-width: 2;
     }
-    .curve-legend {
+    .curve-legend,
+    .chart-legend {
       display: flex;
       flex-wrap: wrap;
       gap: 4px 14px;
@@ -1146,6 +1164,141 @@ export class ViessmannBoilerCard extends LitElement {
     .empty {
       margin: 0;
       color: var(--secondary-text-color);
+    }
+
+    /* Usage */
+    viessmann-boiler-usage {
+      display: block;
+    }
+    .series-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .series-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider);
+      border-radius: 999px;
+      background: transparent;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .series-toggle[aria-pressed="false"] {
+      color: var(--secondary-text-color);
+    }
+    .series-toggle[aria-pressed="false"] .key.line {
+      background: transparent;
+      box-shadow: inset 0 0 0 1px var(--secondary-text-color);
+    }
+    .key.line {
+      width: 14px;
+      height: 3px;
+      margin-right: 0;
+      border-radius: 2px;
+      vertical-align: 3px;
+      background: var(--c);
+    }
+    .key.bar {
+      border-radius: 2px;
+      background: var(--series-boiler);
+    }
+    .key.bar.whole-hours {
+      background: repeating-linear-gradient(
+        45deg,
+        var(--series-boiler) 0 2px,
+        color-mix(in srgb, var(--series-boiler) 30%, transparent) 2px 4px
+      );
+    }
+    .chart {
+      position: relative;
+      border-radius: 6px;
+      outline: none;
+      touch-action: pan-y;
+      transition: opacity 0.2s;
+    }
+    .chart:focus-visible {
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .chart.loading {
+      opacity: 0.55;
+    }
+    .usage-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .usage-chart .grid,
+    .usage-chart .crosshair {
+      stroke: var(--divider);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+    .usage-chart .crosshair {
+      stroke: var(--secondary-text-color);
+    }
+    .usage-chart .tick {
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+      fill: var(--secondary-text-color);
+    }
+    .series-line {
+      stroke: var(--c);
+      stroke-width: 2;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .hover-dot {
+      fill: var(--c);
+      stroke: var(--ha-card-background, var(--card-background-color, #fff));
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+    .usage-chart .bar {
+      fill: var(--series-boiler);
+      transition: opacity 0.15s;
+    }
+    .bars.hovering .bar:not(.active) {
+      opacity: 0.45;
+    }
+    .hatch-back {
+      fill: var(--series-boiler);
+      opacity: 0.3;
+    }
+    .hatch-line {
+      fill: var(--series-boiler);
+    }
+    .tip {
+      position: absolute;
+      top: 4px;
+      z-index: 1;
+      display: grid;
+      gap: 3px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      color: var(--primary-text-color);
+      background: var(--ha-card-background, var(--card-background-color, #fff));
+      box-shadow: 0 0 0 1px var(--divider), 0 4px 12px rgba(0, 0, 0, 0.16);
+      transform: translateX(12px);
+      pointer-events: none;
+    }
+    .tip.left {
+      transform: translateX(calc(-100% - 12px));
+    }
+    .tip-head {
+      color: var(--secondary-text-color);
+    }
+    .tip-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tip strong {
+      font-variant-numeric: tabular-nums;
     }
   `;
 }

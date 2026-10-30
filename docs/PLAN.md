@@ -1,6 +1,6 @@
 # Viessmann Boiler Card: Plan
 
-_Last updated 2026-10-26. Status: built, and installed through HACS from release v0.2.0._
+_Last updated 2026-10-30. Status: built, and installed through HACS from release v0.2.0. Usage tab added since._
 
 A Home Assistant dashboard card for the built-in **Viessmann ViCare** integration (`vicare`). It shows a realistic rendering of the chosen Viessmann unit inside its full hydronic system: heating loops, zones and the hot water tank loop. Water flow is animated from live states, and every entity and setting the integration provides is available in the card.
 
@@ -15,6 +15,7 @@ A Home Assistant dashboard card for the built-in **Viessmann ViCare** integratio
 | Distribution | For the owner's use, installed through HACS as a custom repository from the public GitHub repo. The build is committed in `dist/` with each part's render and ports, because HACS installs from there. |
 | Schedules and holiday mode | Not for now. Home Assistant doesn't expose them. |
 | Primary screen | Assumed: landscape tablet and desktop first. Phones get a zoomable diagram with tabs. |
+| Usage history | Read from Home Assistant's recorder, never from Viessmann. Burner run time comes from on/off history where the recorder still has it (10 days by default), and from the burner hour counter's long-term statistics before that, in whole hours. |
 
 ## Reference installation
 
@@ -115,7 +116,14 @@ This controller doesn't provide return temperatures, gas or energy use, a one-ti
 4. **Labels and touch targets.** Temperatures and states, scaled with the card. Tapping a part opens its entity's more-info dialog; tapping a zone opens its thermostat.
 5. **Burner.** A soft warm glow over the combustion area while the burner fires, brighter at higher modulation. No flames.
 
-**Tabs:** System (the diagram), Heating, Hot water, Zones, Diagnostics.
+**Tabs:** System (the diagram), Heating, Hot water, Usage, Diagnostics.
+
+**Usage tab**
+
+- Temperatures over the last 24 hours: boiler, each circuit's supply and the tank. Each one can be shown or hidden, and the colours were checked for colour-blind separation in light and dark.
+- Burner run time per day for 30 days, with today so far, yesterday and the daily average.
+- Both charts show values on hover, tap or arrow keys.
+- The recorder is read when the tab opens, and again every 5 minutes while it stays open.
 
 **Controls**
 
@@ -168,6 +176,9 @@ This controller doesn't provide return temperatures, gas or energy use, a one-ti
    - Released through HACS as a custom repository. `dist/` is committed, and `npm version` rebuilds it before tagging.
    - `npm run deploy` copies a build into `/config/www` to try a change before releasing it.
    - Renders are requested with the card version, because HACS serves files with long cache headers.
+8. **Usage tab.** Built: temperature history and burner run time from the recorder. Next, check it against the live recorder:
+   - the temperatures match Home Assistant's own history graphs;
+   - the day where the on/off history begins joins the hour counter cleanly.
 
 ## Testing
 

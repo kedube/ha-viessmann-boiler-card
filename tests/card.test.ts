@@ -138,6 +138,26 @@ describe("card controls", () => {
     expect(zones?.map((z) => z.name)).toEqual(["Bathroom", "Den", "Entryway", "Garage", "Hallway", "Living Room", "Master Bath"]);
   });
 
+  it("charts temperatures and burner run time from Home Assistant's history, without calling ViCare", async () => {
+    const ws: string[] = [];
+    const hass = card.hass;
+    card.hass = { ...hass, callWS: (msg) => (ws.push(msg.type), hass.callWS(msg)) };
+    await openTab("Usage");
+    await vi.waitFor(() => expect(root().querySelectorAll(".bar").length).toBeGreaterThan(25));
+
+    expect(ws.sort()).toEqual(["history/history_during_period", "history/history_during_period", "recorder/statistics_during_period"]);
+    expect(root().querySelectorAll(".series-line")).toHaveLength(4);
+    // The recorder kept on/off history for 10 days; older days are whole hours from the counter.
+    expect(root().querySelector(".chart-legend")?.textContent).toContain("Whole hours");
+
+    const tank = () => buttons(".series-toggle").find((b) => b.textContent?.includes("Hot water tank"))!;
+    tank().click();
+    await card.updateComplete;
+    expect(root().querySelectorAll(".series-line")).toHaveLength(3);
+    expect(tank().getAttribute("aria-pressed")).toBe("false");
+    expect(calls).toEqual([]);
+  });
+
   it("lists every ViCare entity on the diagnostics tab", async () => {
     await openTab("Diagnostics");
     const rows = root().querySelectorAll(".entity-row");
