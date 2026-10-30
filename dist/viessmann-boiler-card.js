@@ -556,7 +556,7 @@ function Pe(e) {
 	}), t;
 }
 // package.json
-var Fe = "0.2.0", Ie = "viessmann-boiler-card", Le = "viessmann-boiler-card-editor", Re = "viessmann-boiler-usage", ze = Fe.replace(/\.0$/, ""), Be = new URL(
+var Fe = "0.3.0", Ie = "viessmann-boiler-card", Le = "viessmann-boiler-card-editor", Re = "viessmann-boiler-usage", ze = Fe.replace(/\.0$/, ""), Be = new URL(
 	/* @vite-ignore */
 	"viessmann-boiler-card/",
 	import.meta.url
